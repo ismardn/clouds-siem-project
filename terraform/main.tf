@@ -245,7 +245,8 @@ resource "google_compute_instance" "opnsense_vm" {
   boot_disk {
     initialize_params { 
       image = google_compute_image.opnsense_image.self_link
-      size  = 50 
+      size  = 50
+      type  = "pd-balanced"
     }
   }
 
@@ -288,7 +289,8 @@ resource "google_compute_instance" "wazuh_docker_host" {
   boot_disk {
     initialize_params { 
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts"
-      size  = 100 
+      size  = 100
+      type  = "pd-balanced"
     }
   }
   
@@ -314,6 +316,7 @@ resource "google_compute_instance" "web_server" {
     initialize_params { 
       image = "projects/ubuntu-os-cloud/global/images/family/ubuntu-2404-lts"
       size  = 20 
+      type  = "pd-standard"
     }
   }
   
@@ -338,6 +341,7 @@ resource "google_compute_instance" "windows_server" {
     initialize_params { 
       image = "projects/windows-cloud/global/images/family/windows-2022"
       size  = 50 
+      type  = "pd-balanced"
     }
   }
   
