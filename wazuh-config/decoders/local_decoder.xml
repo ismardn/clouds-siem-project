@@ -1,0 +1,4 @@
+<decoder name="suricata_opnsense">
+  <program_name>^suricata</program_name>
+  <plugin_decoder>JSON_Decoder</plugin_decoder>
+</decoder>
