@@ -8,7 +8,7 @@
 
 L'objectif de cette première phase est de construire l'ossature réseau étanche sur Google Cloud Platform et d'y déployer un prototype fonctionnel de la plateforme SIEM. La complexité de cette phase réside dans la superposition du routage virtuel de GCP et du routage interne de notre appliance pare-feu.
 
-![Architecture Phase 1](architecture/architecture-phase1-all-in-one.png)
+![Architecture Phase 1](../architecture/architecture-phase1-all-in-one.png)
 
 ### 1.1 Cloisonnement réseau (VPC) et stratégie d'adressage
 Pour simuler un environnement d'entreprise réaliste, l'architecture repose sur un VPC personnalisé (Virtual Private Cloud) découpé en quatre sous-réseaux isolés :
@@ -26,13 +26,15 @@ Le cœur névralgique du réseau est une instance FreeBSD faisant tourner OPNsen
 * **Suppression du routage par défaut GCP :** Par défaut, Google Cloud crée des routes pointant vers sa propre passerelle Internet (priorité 1000) pour chaque sous-réseau. Plutôt que de créer des règles prioritaires, ces routes par défaut ont été purement et simplement supprimées. Ainsi, le trafic sortant des machines privées est naturellement contraint de traverser la seule passerelle restante : l'interface interne d'OPNsense.
 * **Translation d'adresses (NAT) et pare-feu Cloud :** Mise en place d'un *Port Forwarding* (DNAT) sur l'interface WAN pour exposer le service Web DVWA. Pour que le serveur réponde correctement sans être bloqué par l'hyperviseur, la règle native GCP de la DMZ a été élargie (`source-ranges: 0.0.0.0/0`).
 
-![Tableau de bord OPNsense](screenshots/opnsense_dashboard_interfaces.png)
+<br>
+
+![Tableau de bord OPNsense](../screenshots/opnsense_dashboard_interfaces.png)
 *Aperçu du tableau de bord OPNsense confirmant le bon provisionnement des interfaces (WAN, LAN, SOC, DMZ, VPN_WG) et la supervision du trafic inter-VPC.*
 
 ### 1.3 Accès sécurisé de l'administrateur (tunnel WireGuard et mRemoteNG)
 Puisque les machines de travail sont invisibles depuis Internet, un canal d'administration "back-office" a été déployé pour permettre l'intervention de l'administrateur :
 * **Tunnel VPN :** Déploiement d'un serveur WireGuard sur OPNsense avec ouverture du port UDP `51820` en entrée de zone WAN.
-* **Administration distante :** Ce tunnel crypté permet aux postes d'administration physiques de s'insérer virtuellement dans le réseau privé Cloud. C'est via ce lien que l'administrateur gère l'infrastructure à l'aide de mRemoteNG, centralisant les sessions RDP (vers Windows) et SSH (vers les serveurs Linux).
+* **Administration distante :** Ce tunnel chiffré permet aux postes d'administration physiques de s'insérer virtuellement dans le réseau privé Cloud. C'est via ce lien que l'administrateur gère l'infrastructure à l'aide de mRemoteNG, centralisant les sessions RDP (vers Windows) et SSH (vers les serveurs Linux).
 
 <details>
 <summary>Cliquez ici pour voir la configuration WireGuard côté client (wg0.conf)</summary>
@@ -58,12 +60,12 @@ Afin d'équilibrer les performances requises et l'optimisation des coûts, les i
 | `opnsense-vm` | Routeur / pare-feu | `e2-highcpu-4` | 4 vCPUs / 4 Go RAM | 50 Go Balanced PD |
 | `wazuh-aio` | SIEM monolithique | `e2-medium` | 2 vCPUs / 4 Go RAM | 100 Go Balanced PD |
 | `web-server` | Serveur DVWA | `e2-small` | 2 vCPUs / 2 Go RAM | 20 Go Standard PD |
-| `windows-server` | Poste LAN employé | `e2-medium` | 2 vCPUs / 4 Go RAM | 50 Go Standard PD |
+| `windows-server` | Poste LAN employé | `e2-medium` | 2 vCPUs / 4 Go RAM | 50 Go Balanced PD |
 
 **Contrôle des coûts (FinOps) :**
 S'agissant d'un environnement de laboratoire (PoC), la maîtrise de la facturation Cloud est primordiale. Une politique de ressource automatisée (`google_compute_resource_policy`) a été mise en place et attachée aux instances. Elle force l'arrêt des machines virtuelles tous les jours à minuit (fuseau horaire Europe/Paris), garantissant qu'aucune ressource inactive ne consomme de crédits pendant la nuit.
 
-![Instances GCP Compute Engine](screenshots/gcp_compute_instances.png)
+![Instances GCP Compute Engine](../screenshots/gcp_compute_instances.png)
 *Interface Google Cloud Platform illustrant le cloisonnement du réseau avec les adresses IP privées (10.0.X.X).*
 
 ### 1.5 Préparation des cibles (vecteurs d'attaque)
@@ -92,7 +94,7 @@ Pour répondre aux standards de haute disponibilité, de résilience et de ségr
 
 Afin de pallier les limites du modèle monolithique (Point de Défaillance Unique - SPOF, goulets d'étranglement), l'infrastructure a été refondue vers une architecture distribuée multi-nœuds. 
 
-![Architecture Phase 2](architecture/architecture-phase2-distributed.png)
+![Architecture Phase 2](../architecture/architecture-phase2-distributed.png)
 
 ### 2.1 Scission du cluster SIEM et redimensionnement (sizing "lite")
 Le nœud "All-in-One" a été détruit et remplacé par trois instances dédiées au sein du **VPC-SOC**. S'agissant d'un environnement de validation (PoC), cette ségrégation a été pensée dans une logique d'optimisation des coûts (FinOps), en allouant les ressources Cloud au plus juste des prérequis de chaque composant :
@@ -127,10 +129,10 @@ Pour transformer cette infrastructure en une plateforme moderne, reproductible e
 
 Pour répondre aux défis de scalabilité et de maintenance identifiés en Phase 2, l'infrastructure du SIEM a subi une dernière refonte architecturale majeure : le passage d'un modèle IaaS (Machines Virtuelles dédiées) à un modèle CaaS (Containers as a Service).
 
-![Architecture Phase 3](architecture/architecture-phase3-containerized.png)
+![Architecture Phase 3](../architecture/architecture-phase3-containerized.png)
 
 ### 3.1 Provisionnement de l'hôte Docker (Infrastructure as Code)
-Les trois machines virtuelles de la Phase 2 ont été décommissionnées au profit d'un hôte central unique, provisionné via Terraform. Pour supporter la charge de multiples conteneurs (notamment les moteurs d'indexation basés sur Java), cette instance a été dimensionnée en conséquence :
+Les trois machines virtuelles de la Phase 2 ont été décommissionnées au profit d'un hôte central unique. Pour supporter la charge de multiples conteneurs (notamment les moteurs d'indexation basés sur Java), cette instance a été dimensionnée en conséquence :
 
 | Instance | OS | Type GCP | Profil matériel | Stockage (disque) |
 |---|---|---|---|---|
@@ -147,7 +149,10 @@ Le déploiement de la stack SIEM est désormais entièrement géré de manière 
 * **L'interface (`wazuh.dashboard`) :** Exposée de manière sécurisée pour la visualisation des données et les investigations de l'équipe SOC.
 * **Le Load Balancer (`nginx`) :** Front-end réseau de l'infrastructure Docker.
 
-![Cluster Docker Wazuh](screenshots/docker_ps_cluster.png)
+<br>
+
+![Cluster Docker Wazuh](../screenshots/docker_ps_cluster.png)
+<br>
 *Exécution de la commande `docker ps` (formatée) sur l'hôte Ubuntu, montrant l'instanciation réussie des 7 conteneurs.*
 
 ### 3.3 Équilibrage de charge (Load Balancer NGINX)

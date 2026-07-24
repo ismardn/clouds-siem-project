@@ -42,7 +42,7 @@ La documentation de ce projet a été rédigée avec la rigueur d'un environneme
 
 1. [**État de l'art et choix technologiques**](docs/01_STATE_OF_THE_ART.md) : Justification des choix architecturaux, comparatifs des solutions SIEM/Cloud et contraintes réglementaires.
 2. [**Architecture et évolution de l'infrastructure**](docs/02_ARCHITECTURE_AND_EVOLUTION.md) : Récit du déploiement progressif, du nœud monolithique (IaaS) jusqu'au cluster haute disponibilité (CaaS).
-3. [**Détection et réponse aux incidents (workflow XDR)**](docs/03_DETECTION_AND_RESPONSE.md) : Playbook de l'équipe SOC, règles de corrélation XML personnalisées, Threat Intelligence et SOAR.
+3. [**Détection et réponse aux incidents (workflow XDR)**](docs/03_DETECTION_AND_RESPONSE.md) : Playbook SOC, règles de corrélation XML personnalisées, Threat Intelligence et SOAR.
 4. [**Résolution des incidents (troubleshooting)**](docs/04_TROUBLESHOOTING.md) : Analyse technique et résolution des problématiques complexes de routage Cloud et de conteneurisation rencontrées lors du "Build".
 
 ---
@@ -60,3 +60,12 @@ clouds-siem-project/
  ├── wazuh-config/     # Règles de corrélation, décodeurs et dashboards exportés
  └── README.md         # Ce fichier
 ```
+
+## Bilan et perspectives (Roadmap)
+
+Ce projet a permis de valider la faisabilité technique d'un SOC complet et open-source, en couvrant l'ensemble de la chaîne de valeur : de l'ingénierie réseau Cloud (VPC, routage) jusqu'à la conteneurisation du SIEM et l'automatisation de la réponse aux incidents (SOAR). 
+
+**Évolutions possibles :**
+* **Orchestration avancée :** Migration du cluster Docker Compose vers un environnement Kubernetes (GKE) pour une gestion de la charge et une résilience de niveau production.
+* **Threat Intelligence centralisée :** Déploiement d'une instance MISP (Malware Information Sharing Platform) pour enrichir la détection de Wazuh avec des sources de renseignement locales et communautaires.
+* **Breach & Attack Simulation (BAS) :** Automatisation du déploiement des vecteurs d'attaques (Purple Teaming) via des playbooks Ansible pour valider l'ingénierie de détection en continu.

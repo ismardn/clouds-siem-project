@@ -56,4 +56,4 @@ Une fois les conteneurs démarrés, les services sont accessibles sur les ports 
 - **Agent connection (events) :** port `1514` (TCP via load balancer NGINX)
 - **API Wazuh :** port `55000` (TCP)
 
-> **Note de sécurité :** Dans ce dépôt, les mots de passe et les certificats TLS ont été anonymisés. Avant le déploiement en production, générez vos propres certificats (via le script de génération officiel de Wazuh) et modifiez les identifiants par défaut dans le fichier `docker-compose.yml`.
+> **Note :** Dans ce dépôt, les mots de passe et les certificats TLS ont été anonymisés. Avant le déploiement en production, générez vos propres certificats (via le script de génération officiel de Wazuh) et modifiez les identifiants par défaut dans le fichier `docker-compose.yml`.

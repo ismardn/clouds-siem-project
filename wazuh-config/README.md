@@ -16,7 +16,7 @@ wazuh-config/
 
 ## Contenu et déploiement
 
-Dans le cadre de notre architecture finale conteneurisée (Phase 3), ces fichiers de configuration ne sont pas copiés manuellement. Ils sont injectés dynamiquement dans les conteneurs Wazuh (Master et Worker) grâce au mécanisme de **Volumes Docker** défini dans le fichier `docker-compose.yml`.
+Dans le cadre de l'architecture finale conteneurisée (Phase 3), ces fichiers de configuration ne sont pas copiés manuellement. Ils sont injectés dynamiquement dans les conteneurs Wazuh (Master et Worker) grâce au mécanisme de **Volumes Docker** défini dans le fichier `docker-compose.yml`.
 
 ### 1. Décodeurs (`/decoders/local_decoder.xml`)
 Contient le décodeur sur-mesure permettant au SIEM de comprendre et de parser le format JSON des alertes réseaux provenant de l'IDS Suricata (via OPNsense).
@@ -32,4 +32,4 @@ Contient l'ingénierie de détection (Detection Engineering) :
 
 ### 3. Tableau de bord (`/dashboards/soc-main-dashboard.ndjson`)
 Export complet du tableau de bord personnalisé centralisant les KPIs (Alertes critiques, actions de blocage, origine des attaques, intégration VirusTotal).
-*   **Mode de déploiement :** À importer manuellement via l'interface Web (Menu principal > Management > Stack Management > Saved Objects > Import).
+*   **Mode de déploiement :** À importer manuellement via l'interface Web (Menu principal > Dashboard Management > Dashboards Management > Saved Objects > Import).

@@ -11,7 +11,7 @@ Ce code déploie exclusivement les ressources matérielles et réseaux (IaaS) :
 - **Compute :** 4 machines virtuelles (OPNsense, Docker Host, cibles Windows/Ubuntu).
 - **FinOps :** Stratégie d'arrêt automatique des serveurs de test à minuit pour optimiser les coûts de laboratoire.
 
-> **Note importante :** Ce code provisionne l'infrastructure vierge. La configuration du routeur OPNsense et le déploiement applicatif du SOC (Wazuh) sont gérés respectivement via l'interface web de l'appliance et via Docker Compose (voir le dossier `docker/`).
+> **Note importante :** Ce code provisionne l'infrastructure vierge. La configuration du routeur OPNsense et le déploiement applicatif du SOC (Wazuh) sont gérés respectivement via l'interface web du pare-feu et via Docker Compose (voir le dossier `docker/`).
 
 ## Préparation de l'image OPNsense (prérequis)
 
@@ -40,8 +40,8 @@ Google Cloud ne fournissant pas d'image native pour OPNsense, vous devez prépar
     **Exemple de contenu pour `terraform.tfvars` :**
     ```hcl
     project_id  = "votre-id-projet-gcp"
-    admin_ip    = "X.X.X.X/32" # Votre IP publique pour l'accès WAN
-    ssh_pub_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..." # Clé publique pour l'accès aux VM
+    admin_ip    = "X.X.X.X/32"                                  # Votre IP publique pour l'accès WAN
+    ssh_pub_key = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC..."  # Clé publique pour l'accès aux VM
     ```
 
 2. Initialisez l'environnement Terraform :

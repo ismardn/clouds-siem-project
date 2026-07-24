@@ -54,7 +54,7 @@ Plutôt que de se limiter aux logs des serveurs, une surveillance en amont a ét
 ### 1.2 Détection système et intégrité (HIDS & FIM)
 Sur la cible DMZ (serveur Ubuntu hébergeant DVWA), la configuration de l'agent Wazuh (`ossec.conf`) a été durcie pour traquer les comportements anormaux au plus près du système d'exploitation :
 * **Surveillance système (Auditd) :** Le démon Linux `auditd` a été configuré pour journaliser les appels systèmes critiques.
-* **File Integrity Monitoring (FIM) :** Le module `<syscheck>` scanne et calcule les empreintes cryptographiques (hashes) des fichiers en temps réel sur le répertoire Web (`/var/www/html`) et les dossiers critiques (`/etc`, `/root/.ssh`).
+* **File Integrity Monitoring (FIM) :** Le module `<syscheck>` scanne et calcule les empreintes cryptographiques (hashes) des fichiers en temps réel sur le répertoire Web (`/var/www/html`) et les dossiers critiques (`/etc`, `/root/.ssh`, etc.).
 
 <details>
 <summary>Extrait de ossec.conf (cible DMZ) - Configuration FIM (syscheck)</summary>
@@ -86,7 +86,7 @@ Sur la cible DMZ (serveur Ubuntu hébergeant DVWA), la configuration de l'agent 
 
 ### 1.3 Ingénierie de détection (règles de corrélation)
 Des règles de corrélation sur-mesure ont été injectées dans le fichier `local_rules.xml` du Wazuh Manager :
-* **Corrélation temporelle (brute-force) :** La règle `100021` agit comme un compteur. Si un POST HTTP sur `login.php` (règle enfant `100020`) est répété plus de 10 fois en 60 secondes depuis la même IP, elle déclenche une alerte de niveau 10.
+* **Corrélation temporelle (brute-force) :** La règle `100021` agit comme un compteur. Si un POST HTTP sur `login.php` (règle parent `100020`) est répété plus de 10 fois en 60 secondes depuis la même IP, elle déclenche une alerte de niveau 10.
 * **Détection de RCE / WebShell :** En s'appuyant sur Auditd, la règle `100005` (niveau 12) se déclenche si une commande shell (`susp_shell`) est exécutée par le compte de service Apache (`UID 33`).
 
 <details>
@@ -120,7 +120,7 @@ Des règles de corrélation sur-mesure ont été injectées dans le fichier `loc
 ```
 </details>
 
-#### Validation 1 : Attaque par force brute (Purple Teaming)
+#### Validation 1 : Attaque par force brute
 Afin de valider l'efficacité de la règle `100021`, une simulation d'attaque offensive a été menée. Un script Python sur-mesure a été développé pour automatiser une attaque par force brute tout en contournant dynamiquement le jeton anti-CSRF (Cross-Site Request Forgery) imposé par DVWA. 
 
 <details>
@@ -144,6 +144,7 @@ passwords = [
     "poiuytrewqlk", "1231231231", "wsxedcrfv1", "mnbvcxz123", "lkjhgfdsa1",
     "iloveyou123", "welcome123", "monkey123", "football123", "dragon123",
     "superman123", "guest12345", "admin12345",
+
     "password"
 ]
 
@@ -250,7 +251,7 @@ L'un des défis majeurs d'un SIEM est la "fatigue d'alerte". Obliger l'équipe �
 L'aboutissement du projet réside dans sa capacité à passer de l'observation à l'action. Le module **Active Response** de Wazuh a été implémenté pour endiguer automatiquement une attaque en cours.
 
 * **Le scénario de défense :** Lorsqu'une attaque dépasse le seuil critique (niveau 10), le manager déclenche la commande `firewall-drop` sur l'agent local concerné.
-* **Avantage tactique :** La balise `<timeout>60</timeout>` permet de bannir l'IP attaquante au niveau du pare-feu local pendant 60 secondes, bloquant net l'attaque avant même l'intervention humaine, tout en évitant un bannissement permanent qui pourrait causer un déni de service (DoS) légitime.
+* **Avantage tactique :** La balise `<timeout>60</timeout>` permet de bannir l'IP attaquante au niveau du pare-feu local pendant 60 secondes (durée de test), bloquant net l'attaque avant même l'intervention humaine, tout en évitant un bannissement permanent qui pourrait causer un déni de service (DoS) légitime.
 
 <details>
 <summary>Extrait ossec.conf (manager) - Active Response</summary>

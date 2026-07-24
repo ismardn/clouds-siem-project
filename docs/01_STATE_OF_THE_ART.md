@@ -34,7 +34,7 @@ GCP offre le meilleur équilibre entre disponibilité de crédits, richesse des 
 ### 2.2 Stratégie FinOps et topologie hybride
 
 Afin de préserver l'enveloppe de crédits GCP, des choix d'architecture spécifiques ont été arrêtés :
-* **Dimensionnement des disques :** Utilisation de disques SSD "avec équilibrage" pour l'instance SIEM (nécessaire aux écritures intensives d'OpenSearch) et l'instance Windows Server 2022, mais maintien de disques durs standard (HDD) économiques pour le pare-feu et le serveur Web Ubuntu.
+* **Dimensionnement des disques :** Utilisation de disques SSD "avec équilibrage" pour les instances critiques (SIEM, Windows Server et pare-feu OPNsense) afin d'assurer performance et réactivité, et maintien de disques durs standard (HDD) économiques uniquement pour le serveur Web Ubuntu.
 * **Topologie hybride (simulation de menace) :** L'attaquant (Kali Linux) n'est pas hébergé dans le Cloud. Il opère en local depuis le poste physique pour attaquer l'IP publique de la passerelle GCP, simulant ainsi une véritable attaque externe sans surcoût d'hébergement.
 * **Extinction planifiée :** Mise en place d'une politique `resource-policies` avec Cloud Scheduler pour automatiser l'arrêt complet de l'infrastructure en dehors des heures de travail.
 
@@ -72,7 +72,6 @@ Le cahier des charges impose la surveillance d'un pare-feu communiquant via sysl
 | **Coûts Cloud** | Gratuit. Import d'images personnalisées sur GCP facilité par la communauté (support cloud-init), sans surcoût. | ❌ Risque de coûts cachés. Version Plus payante (Marketplace). Import CE bloquant sur KVM. | Gratuit et natif. Cependant, pas de pare-feu applicatif. |
 | **API & Automatisation** | API REST native - atout majeur pour automatiser la réponse aux incidents (Phase 3). | ⚠️ API moins mature, freine l'automatisation en Phase 3. | ❌ Gestion en CLI uniquement - aucune API. |
 | **Surveillance réseau** | ✅ Interface graphique, tableaux de bord réseau, intégration syslog native. | Bon candidat, architecture vieillissante côté hyperviseur cloud. | ❌ Insuffisant - aucune vision globale des menaces réseau. |
-| **Stabilité GCP** | ✅ Code moderne, extrêmement stable sur GCP. | Intégration hyperviseur cloud moins native. | Natif OS - stable, mais sans valeur ajoutée sécurité. |
 
 OPNsense est retenu pour son API REST native, son déploiement sans friction sur GCP et sa roadmap active.
 
