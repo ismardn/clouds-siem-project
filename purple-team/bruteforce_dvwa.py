@@ -3,7 +3,7 @@
 import requests
 from bs4 import BeautifulSoup
 
-url = "http://<IP_PUBLIQUE_DMZ>/login.php"
+url = "http://<IP_PUBLIQUE_WAN>/login.php"
 username = "admin"
 passwords = [
     "12345678", "qwertyuiop", "azerty123", "letmein123",
