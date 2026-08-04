@@ -161,6 +161,6 @@ Agissant comme un proxy TCP (module `stream`), NGINX écoute sur le port **1514*
 À l'issue de cette Phase 3, le projet **CLOUDS** dispose d'une infrastructure réseau et Cloud robuste, cloisonnée (VPC/OPNsense) et d'un socle SIEM moderne, scalable et facilement reproductible. 
 
 ![Instances GCP Compute Engine Finales](../screenshots/gcp_compute_instances.png)
-*Aperçu de la console Google Cloud Compute Engine listant l'ensemble des machines virtuelles provisionnées lors du projet.*
+*Aperçu du service Compute Engine depuis la console Google Cloud listant les machines virtuelles du projet, illustrant le cloisonnement des adresses IP.*
 
 *L'infrastructure étant désormais stable, hautement disponible et performante, le focus opérationnel bascule sur l'ingénierie de détection (Blue Team) et la réponse aux incidents. L'ensemble des mécanismes de sécurité déployés sur cette stack (Règles XML, FIM, IDS Suricata, Active Response, intégration VirusTotal et Alerting Slack) est documenté de manière exhaustive dans le fichier **`03_DETECTION_AND_RESPONSE.md`**.*
