@@ -65,9 +65,6 @@ Afin d'équilibrer les performances requises et l'optimisation des coûts, les i
 **Contrôle des coûts (FinOps) :**
 S'agissant d'un environnement de laboratoire (PoC), la maîtrise de la facturation Cloud est primordiale. Une politique de ressource automatisée (`google_compute_resource_policy`) a été mise en place et attachée aux instances. Elle force l'arrêt des machines virtuelles tous les jours à minuit (fuseau horaire Europe/Paris), garantissant qu'aucune ressource inactive ne consomme de crédits pendant la nuit.
 
-![Instances GCP Compute Engine](../screenshots/gcp_compute_instances.png)
-*Interface Google Cloud Platform illustrant le cloisonnement du réseau avec les adresses IP privées (10.0.X.X).*
-
 ### 1.5 Préparation des cibles (vecteurs d'attaque)
 Déploiement des environnements isolés servant à générer les événements de sécurité :
 * **Cible DMZ (Ubuntu Server) :** Hébergement de l'application intentionnellement vulnérable **DVWA** (Damn Vulnerable Web App). Déployée sur une stack **LAMP** (Apache2, PHP, MySQL) dans le répertoire standard `/var/www/html`, elle est accessible depuis Internet uniquement via les règles de NAT d'OPNsense. Cette machine sert de leurre interactif pour subir et journaliser des attaques externes (Injections SQL, Brute-force, RCE).
@@ -162,5 +159,8 @@ Agissant comme un proxy TCP (module `stream`), NGINX écoute sur le port **1514*
 
 ### 3.4 Bilan de l'infrastructure finale
 À l'issue de cette Phase 3, le projet **CLOUDS** dispose d'une infrastructure réseau et Cloud robuste, cloisonnée (VPC/OPNsense) et d'un socle SIEM moderne, scalable et facilement reproductible. 
+
+![Instances GCP Compute Engine Finales](../screenshots/gcp_compute_instances.png)
+*Aperçu de la console Google Cloud Compute Engine listant l'ensemble des machines virtuelles provisionnées lors du projet.*
 
 *L'infrastructure étant désormais stable, hautement disponible et performante, le focus opérationnel bascule sur l'ingénierie de détection (Blue Team) et la réponse aux incidents. L'ensemble des mécanismes de sécurité déployés sur cette stack (Règles XML, FIM, IDS Suricata, Active Response, intégration VirusTotal et Alerting Slack) est documenté de manière exhaustive dans le fichier **`03_DETECTION_AND_RESPONSE.md`**.*
